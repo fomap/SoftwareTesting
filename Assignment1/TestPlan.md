@@ -45,80 +45,20 @@ Roles and responsibilities – Assign clear ownership for test execution and rep
 Risks and mitigation – Identify potential blockers early.
 2.  Twelve test cases from your week 3 design work, in full format, each traced to a requirement.
 
-“Requirement IDs used in traceability:
-REQ-AMT: Amount 100–500,000 KZT per transfer, whole tenge only.
-REQ-DAILY: Daily limit 1,000,000 KZT across all transfers, reset at midnight Almaty time.
-REQ-SMS: Transfers above 100,000 KZT require a 6-digit SMS code.
-REQ-CODE: SMS code valid 120 seconds; three wrong attempts cancel transfer.
-REQ-PREC: If amount and daily limit are both violated, show amount error.
-DEC-Rx: Decision table rule.
-ST-x: State transition number.”
-“
-Test ID
-Traces to
-Preconditions
-Test data / steps
-Expected result
-TC-01
-REQ-AMT; DEC-R2
-User authenticated; daily total = 0 KZT; valid recipient.
-Transfer 100 KZT whole tenge.
-Transfer executes without SMS. Daily total becomes 100 KZT.
-TC-02
-REQ-AMT; REQ-SMS; DEC-R1; ST-4
-Daily total = 0 KZT; SMS service available.
-Transfer 500,000 KZT. Receive SMS and enter correct 6-digit code within 120 s.
-SMS code requested. After correct code, transfer executes. Daily total becomes 500,000 KZT.
-TC-03
-REQ-AMT; DEC-R6
-Daily total = 0 KZT.
-Transfer 99 KZT.
-Rejected: amount not in limit. No SMS. Daily total unchanged.
-TC-04
-REQ-AMT; DEC-R5
-Daily total = 0 KZT.
-Transfer 500,001 KZT.
-Rejected: amount not in limit. No SMS. Daily total unchanged.
-TC-05
-REQ-AMT whole tenge only
-Daily total = 0 KZT.
-Transfer 100.50 KZT.
-Rejected: amount must be whole tenge / invalid amount. No transfer.
-TC-06
-REQ-DAILY; DEC-R1; ST-4
-Daily total already = 600,000 KZT.
-Transfer 400,000 KZT. Enter correct SMS code within 120 s.
-SMS requested. Transfer executes because 600,000 + 400,000 = 1,000,000 KZT, exactly at limit. Daily total becomes 1,000,000 KZT.
-TC-07
-REQ-DAILY; DEC-R3
-Daily total already = 700,000 KZT.
-Transfer 400,000 KZT.
-Rejected: daily total limit exceeded. No SMS. No transfer. Daily total remains 700,000 KZT.
-TC-08
-REQ-DAILY reset; DEC-R4 then R2
-Before midnight Almaty, daily total = 950,000 KZT.
-At 23:59 Almaty, transfer 100,000 KZT → rejected. After 00:01 Almaty next day, transfer 100,000 KZT again.
-First attempt rejected: daily limit exceeded. After midnight Almaty reset, second attempt executes without SMS. New daily total becomes 100,000 KZT.
-TC-09
-REQ-PREC; DEC-R7
-Daily total already = 900,000 KZT.
-Transfer 600,000 KZT. Amount is invalid and daily total would become 1,500,000 KZT.
-Rejected with amount not in limit error, not daily limit error. No SMS.
-TC-10
-REQ-SMS threshold; DEC-R2
-Daily total = 0 KZT.
-Transfer 100,000 KZT exactly.
-Transfer executes without SMS because amount is not above 100,000 KZT. Daily total becomes 100,000 KZT.
-TC-11
-REQ-SMS; REQ-CODE; ST-1 → ST-2 → ST-3 → Cancelled
-Daily total = 0 KZT; valid recipient.
-Transfer 150,000 KZT. When SMS code requested, enter incorrect 6-digit code three times.
-Attempt #1 → Attempt #2 after 1st wrong code. Attempt #2 → Attempt #3 after 2nd wrong code. After 3rd wrong code, transfer is Cancelled. No transfer. Daily total unchanged.
-TC-12
-REQ-CODE; ST-7/8/9 expiry
-Daily total = 0 KZT; valid recipient.
-Transfer 150,000 KZT. When SMS code requested, wait more than 120 seconds before entering code.
-SMS code expires. Transfer state becomes Expired. No transfer. Daily total unchanged.
+“| Test ID |                     Traces to                     |                       Preconditions                       |                                              Test data / steps                                             |                                                                                Expected result                                                                               |
+|:-------:|:-------------------------------------------------:|:---------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| TC-01   | REQ-AMT; DEC-R2                                   | User authenticated; daily total = 0 KZT; valid recipient. | Transfer 100 KZT whole tenge.                                                                              | Transfer executes without SMS. Daily total becomes 100 KZT.                                                                                                                  |
+| TC-02   | REQ-AMT; REQ-SMS; DEC-R1; ST-4                    | Daily total = 0 KZT; SMS service available.               | Transfer 500,000 KZT. Receive SMS and enter correct 6-digit code within 120 s.                             | SMS code requested. After correct code, transfer executes. Daily total becomes 500,000 KZT.                                                                                  |
+| TC-03   | REQ-AMT; DEC-R6                                   | Daily total = 0 KZT.                                      | Transfer 99 KZT.                                                                                           | Rejected: amount not in limit. No SMS. Daily total unchanged.                                                                                                                |
+| TC-04   | REQ-AMT; DEC-R5                                   | Daily total = 0 KZT.                                      | Transfer 500,001 KZT.                                                                                      | Rejected: amount not in limit. No SMS. Daily total unchanged.                                                                                                                |
+| TC-05   | REQ-AMT whole tenge only                          | Daily total = 0 KZT.                                      | Transfer 100.50 KZT.                                                                                       | Rejected: amount must be whole tenge / invalid amount. No transfer.                                                                                                          |
+| TC-06   | REQ-DAILY; DEC-R1; ST-4                           | Daily total already = 600,000 KZT.                        | Transfer 400,000 KZT. Enter correct SMS code within 120 s.                                                 | SMS requested. Transfer executes because 600,000 + 400,000 = 1,000,000 KZT, exactly at limit. Daily total becomes 1,000,000 KZT.                                             |
+| TC-07   | REQ-DAILY; DEC-R3                                 | Daily total already = 700,000 KZT.                        | Transfer 400,000 KZT.                                                                                      | Rejected: daily total limit exceeded. No SMS. No transfer. Daily total remains 700,000 KZT.                                                                                  |
+| TC-08   | REQ-DAILY reset; DEC-R4 then R2                   | Before midnight Almaty, daily total = 950,000 KZT.        | At 23:59 Almaty, transfer 100,000 KZT → rejected. After 00:01 Almaty next day, transfer 100,000 KZT again. | First attempt rejected: daily limit exceeded. After midnight Almaty reset, second attempt executes without SMS. New daily total becomes 100,000 KZT.                         |
+| TC-09   | REQ-PREC; DEC-R7                                  | Daily total already = 900,000 KZT.                        | Transfer 600,000 KZT. Amount is invalid and daily total would become 1,500,000 KZT.                        | Rejected with amount not in limit error, not daily limit error. No SMS.                                                                                                      |
+| TC-10   | REQ-SMS threshold; DEC-R2                         | Daily total = 0 KZT.                                      | Transfer 100,000 KZT exactly.                                                                              | Transfer executes without SMS because amount is not above 100,000 KZT. Daily total becomes 100,000 KZT.                                                                      |
+| TC-11   | REQ-SMS; REQ-CODE; ST-1 → ST-2 → ST-3 → Cancelled | Daily total = 0 KZT; valid recipient.                     | Transfer 150,000 KZT. When SMS code requested, enter incorrect 6-digit code three times.                   | Attempt #1 → Attempt #2 after 1st wrong code. Attempt #2 → Attempt #3 after 2nd wrong code. After 3rd wrong code, transfer is Cancelled. No transfer. Daily total unchanged. |
+| TC-12   | REQ-CODE; ST-7/8/9 expiry                         | Daily total = 0 KZT; valid recipient.                     | Transfer 150,000 KZT. When SMS code requested, wait more than 120 seconds before entering code.            | SMS code expires. Transfer state becomes Expired. No transfer. Daily total unchanged.                                                                                        |
 
 “
 
