@@ -38,12 +38,6 @@ This testing plan is for the money transferring feature for the SigmaBankApp mob
 * Broken core feature of the SigmaBankApp
 * Increased software development cost 
 * Delayed launch of the SigmaBankApp
-
-
-
-
-
-
 ## Twelve test cases from your week 3 design work, in full format, each traced to a requirement.
 
 | Test ID |                     Traces to                     |                       Preconditions                       |                                              Test data / steps                                             |                                                                                Expected result                                                                               |
@@ -62,12 +56,47 @@ This testing plan is for the money transferring feature for the SigmaBankApp mob
 | TC-12   | REQ-CODE; ST-7/8/9 expiry                         | Daily total = 0 KZT; valid recipient.                     | Transfer 150,000 KZT. When SMS code requested, wait more than 120 seconds before entering code.            | SMS code expires. Transfer state becomes Expired. No transfer. Daily total unchanged.                                                                                        |
 ## A traceability matrix — including any requirement you cannot cover, and why.
 
+
+|                            Traceable item                             | TC-01 | TC-02 | TC-03 | TC-04 | TC-05 | TC-06 | TC-07 | TC-08 | TC-09 | TC-10 | TC-11 | TC-12 | Notes                                                                                                                                                                           |
+| :-------------------------------------------------------------------: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|          REQ-AMT — Amount 100–500,000 KZT, whole tenge only           |   X   |   X   |   X   |   X   |   X   |       |       |       |       |   X   |       |       |                                                                                                                                                                                 |
+|     REQ-DAILY — Daily limit 1,000,000 KZT, reset midnight Almaty      |       |       |       |       |       |   X   |   X   |   X   |       |       |       |       |                                                                                                                                                                                 |
+|         REQ-SMS — Above 100,000 KZT requires 6-digit SMS code         |       |   X   |       |       |       |   X   |       |       |       |   X   |   X   |   X   |                                                                                                                                                                                 |
+|          REQ-CODE — Code valid 120s; 3 wrong attempts cancel          |       |       |       |       |       |       |       |       |       |       |   X   |   X   | Three wrong attempts covered. Expiry covered only from Attempt #1. Exact 120s boundary, correct code after 1–2 wrong attempts, and expiry from Attempt #2 / #3 are not covered. |
+| REQ-PREC — If amount and daily limit both violated, show amount error |       |       |       |       |       |       |       |       |   X   |       |       |       | Covers both violated when amount > 100,000 KZT. Both violated when amount ≤ 100,000 KZT is not covered.                                                                         |
+|                                                                       |       |       |       |       |       |       |       |       |       |       |       |       |                                                                                                                                                                                 |
+|                       DEC-R1 — Ask for SMS code                       |       |   X   |       |       |       |   X   |       |       |       |       |       |       |                                                                                                                                                                                 |
+|                       DEC-R2 — Execute transfer                       |   X   |       |       |       |       |       |       |   X   |       |   X   |       |       |                                                                                                                                                                                 |
+|              DEC-R3 — Reject: daily total limit exceeded              |       |       |       |       |       |       |   X   |       |       |       |       |       |                                                                                                                                                                                 |
+|              DEC-R4 — Reject: daily total limit exceeded              |       |       |       |       |       |       |       |   X   |       |       |       |       |                                                                                                                                                                                 |
+|                 DEC-R5 — Reject: amount not in limit                  |       |       |       |   X   |       |       |       |       |       |       |       |       |                                                                                                                                                                                 |
+|                 DEC-R6 — Reject: amount not in limit                  |       |       |   X   |       |       |       |       |       |       |       |       |       |                                                                                                                                                                                 |
+|         DEC-R7 — Reject: amount not in limit (both violated)          |       |       |       |       |       |       |       |       |   X   |       |       |       |                                                                                                                                                                                 |
+|         DEC-R8 — Reject: amount not in limit (both violated)          |       |       |       |       |       |       |       |       |       |       |       |       | Not covered, need to test when daily total is already 1 000 000 KZT and transfer 50 KZT. Expected: amount error, not daily-limit error.                                         |
+|                                                                       |       |       |       |       |       |       |       |       |       |       |       |       |                                                                                                                                                                                 |
+|              ST-1 — Attempt #1 + Incorrect → Attempt #2               |       |       |       |       |       |       |       |       |       |       |   X   |       |                                                                                                                                                                                 |
+|              ST-2 — Attempt #2 + Incorrect → Attempt #3               |       |       |       |       |       |       |       |       |       |       |   X   |       |                                                                                                                                                                                 |
+|               ST-3 — Attempt #3 + Incorrect → Cancelled               |       |       |       |       |       |       |       |       |       |       |   X   |       |                                                                                                                                                                                 |
+|                ST-4 — Attempt #1 + Correct → Confirmed                |       |   X   |       |       |       |   X   |       |       |       |       |       |       |                                                                                                                                                                                 |
+|                ST-5 — Attempt #2 + Correct → Confirmed                |       |       |       |       |       |       |       |       |       |       |       |       | Not covered, need to test one wrong code then correct code.                                                                                                                     |
+|                ST-6 — Attempt #3 + Correct → Confirmed                |       |       |       |       |       |       |       |       |       |       |       |       | Not covered, need to test two wrong codes then correct code.                                                                                                                    |
+|                   ST-7/8/9 — wait > 120s → Expired                    |       |       |       |       |       |       |       |       |       |       |       |   X   |                                                                                                                                                                                 |
 ## A release checklist for the SMS code flow, at most twelve items.
 
+1. Confirm that SMS code is able to be received to any KZ operator 
+2. Verify that correct SMS code entries works when triggered.
+3. Verify that incorrect SMS code entry triggers another attempt or cancels transaction.
+4. Deploy SMS code feature to production app. 
+
 ## Three defect reports, you can mock them or design from lack of requirements.
+	
+
+
 
 ## AI appendix (Level 1): prompts used, raw output, what you changed and why.
 
+
+Task 1: 
 Prompt used: Here is a description for the bank application that has following limitation regarding money transfers:
 
 Amount: 100 to 500,000 KZT per transfer, whole tenge only.
@@ -90,6 +119,7 @@ Here is decision table:
 
 
 as well as state table:
+
 |                     |     Events     |                |             |
 |---------------------|:--------------:|:--------------:|:-----------:|
 |        State        | Incorrect code |  Correct code  | wait > 120s |
@@ -100,24 +130,29 @@ as well as state table:
 |  S5: Transfer money |       N/A      |       N/A      |     N/A     |
 |     S6: Expired     |       N/A      |       N/A      |     N/A     |
 
-
 and state transition table
-| # |                              Transition                             |
-|:-:|:-------------------------------------------------------------------:|
-| 1 | Start state: Attempt #1 Event: Incorrect code End state: Attempt #2 |
-| 2 | Start state: Attempt #2 Event: Incorrect code End state: Attempt #3 |
-| 3 |  Start state: Attempt #3 Event: Incorrect code End state: Cancelled |
-| 4 |   Start state: Attempt #1 Event: Correct code End state: Confirmed  |
-| 5 |   Start state: Attempt #2 Event: Correct code End state: Confirmed  |
-| 6 |   Start state: Attempt #3 Event: Correct code End state: Confirmed  |
-| 7 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
-| 8 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
-| 9 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
 
+|  #  |                             Transition                              |                |             |
+| :-: | :-----------------------------------------------------------------: | :------------: | :---------: |
+|  1  | Start state: Attempt #1 Event: Incorrect code End state: Attempt #2 |  Correct code  | wait > 120s |
+|  2  | Start state: Attempt #2 Event: Incorrect code End state: Attempt #3 | Transfer money |   Expired   |
+|  3  | Start state: Attempt #3 Event: Incorrect code End state: Cancelled  | Transfer money |   Expired   |
+|  4  |  Start state: Attempt #1 Event: Correct code End state: Confirmed   | Transfer money |   Expired   |
+|  5  |  Start state: Attempt #2 Event: Correct code End state: Confirmed   |      N/A       |     N/A     |
+|  6  |  Start state: Attempt #3 Event: Correct code End state: Confirmed   |      N/A       |     N/A     |
+|  7  |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |      N/A       |     N/A     |
+|  8  |    Start state: Attempt #2 Event: wait > 120s End state: Expired    |                |             |
+|  9  |    Start state: Attempt #3 Event: wait > 120s End state: Expired    |                |             |
 your task is to create twelve test cases based on the information below in full format, each traced to a requirement. End of prompt
 
 
+Task 2:
+Prompt used: from this test cases and requirements specified above, create a traceability matrix — including any requirement you cannot cover, and why. End of prompt. Result is on task 2.
+
+
+
 References: 
-https://tryqa.com/what-is-test-strategy-types-of-strategies-with-examples/ 
-https://www.geeksforgeeks.org/software-testing/test-plan-software-testing/ 
+* https://tryqa.com/what-is-test-strategy-types-of-strategies-with-examples/ 
+* https://www.geeksforgeeks.org/software-testing/test-plan-software-testing/ 
+* https://www.browserstack.com/guide/questions-to-ask-before-software-release
 
