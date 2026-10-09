@@ -44,7 +44,7 @@ This testing plan is for the money transferring feature for the SigmaBankApp mob
 
 
 
-2.  Twelve test cases from your week 3 design work, in full format, each traced to a requirement.
+## Twelve test cases from your week 3 design work, in full format, each traced to a requirement.
 
 | Test ID |                     Traces to                     |                       Preconditions                       |                                              Test data / steps                                             |                                                                                Expected result                                                                               |
 |:-------:|:-------------------------------------------------:|:---------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -60,14 +60,13 @@ This testing plan is for the money transferring feature for the SigmaBankApp mob
 | TC-10   | REQ-SMS threshold; DEC-R2                         | Daily total = 0 KZT.                                      | Transfer 100,000 KZT exactly.                                                                              | Transfer executes without SMS because amount is not above 100,000 KZT. Daily total becomes 100,000 KZT.                                                                      |
 | TC-11   | REQ-SMS; REQ-CODE; ST-1 → ST-2 → ST-3 → Cancelled | Daily total = 0 KZT; valid recipient.                     | Transfer 150,000 KZT. When SMS code requested, enter incorrect 6-digit code three times.                   | Attempt #1 → Attempt #2 after 1st wrong code. Attempt #2 → Attempt #3 after 2nd wrong code. After 3rd wrong code, transfer is Cancelled. No transfer. Daily total unchanged. |
 | TC-12   | REQ-CODE; ST-7/8/9 expiry                         | Daily total = 0 KZT; valid recipient.                     | Transfer 150,000 KZT. When SMS code requested, wait more than 120 seconds before entering code.            | SMS code expires. Transfer state becomes Expired. No transfer. Daily total unchanged.                                                                                        |
+## A traceability matrix — including any requirement you cannot cover, and why.
 
-3.  A traceability matrix — including any requirement you cannot cover, and why.
+## A release checklist for the SMS code flow, at most twelve items.
 
-4.  A release checklist for the SMS code flow, at most twelve items.
+## Three defect reports, you can mock them or design from lack of requirements.
 
-5.  Three defect reports, you can mock them or design from lack of requirements.
-
-6.  AI appendix (Level 1): prompts used, raw output, what you changed and why.
+## AI appendix (Level 1): prompts used, raw output, what you changed and why.
 
 Prompt used: Here is a description for the bank application that has following limitation regarding money transfers:
 
@@ -76,8 +75,6 @@ Daily limit: 1,000,000 KZT across all transfers, reset at midnight Almaty time.
 Transfers above 100,000 KZT require a 6-digit SMS code.
 The code is valid for 120 seconds. Three wrong attempts cancel the transfer.
 If the amount and the daily limit are both violated, the amount error is shown.
-
-
 
 Here is decision table:
 
