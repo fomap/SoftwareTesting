@@ -1,48 +1,49 @@
-A documentation pack for the money transfer feature, in your course repository, as Markdown.
-
-1.  A one-page test plan section: scope in and out, approach, entry and exit criteria, top three product risks.
+## A one-page test plan section: scope in and out, approach, entry and exit criteria, top three product risks.
 
 This testing plan is for the money transferring feature for the SigmaBankApp mobile application version 0.1. The objective of this plan is to ensure that the feature meets the demanded requirements and is free of defects. 
 
-Scope includes testing operations related to the money transferring feature. Anything not related to transferring, bank account balance, daily limits and code verification is excluded. 
+**Scope** includes testing operations related to the money transferring feature. Anything not related to transferring, bank account balance, daily limits and code verification is excluded. 
 
-Features to be tested:
-User transferring amounts defined in equivalence partitions, boundary values. 
-SMS code verification
-Limit equal to 1 000 000 KZT across all transfers
-120 seconds valid time window
-3 attempts functionality
-Limit and valid transfer amount violation error window
-Test strategy - analytical strategy, requirement based testing. 
+**Features** to be tested:
+- User transferring amounts defined in equivalence partitions, boundary values. 
+- SMS code verification
+- Limit equal to 1 000 000 KZT across all transfers
+- 120 seconds valid time window
+- 3 attempts functionality
+- Limit and valid transfer amount violation error window
+- Test strategy - analytical strategy, requirement based testing. 
 
-Automated testing: 
-entering valid and invalid transfer values
-entering correct SMS code entry 
-entering SMS code entry at exactly 120 seconds
+**Automated testing:** 
+- entering valid and invalid transfer values
+- entering correct SMS code entry 
+- entering SMS code entry at exactly 120 seconds
 
-Manual testing:
-entering incorrect SMS code entry
-transferring above limit 
-transferring invalid transfer amount
-
-
-Test environment: SigmaBankApp mobile application of 0.1 build version. The provided accounts are: user066 user067, user068. 
-
-Test schedule and milestones 
-
-Phase
-Timelines
-Planning
-02.11.2026 - 13.11.2026
-Execution
-16.11.2026 - 27.11.2026
-Reporting
-30.11.2026 - 04.12.2026
+**Manual testing:**
+- entering incorrect SMS code entry
+- transferring above limit 
+- transferring invalid transfer amount
 
 
+**Test environment:** SigmaBankApp mobile application of 0.1 build version. The provided accounts are: user066 user067, user068. 
 
-Roles and responsibilities – Assign clear ownership for test execution and reporting.
-Risks and mitigation – Identify potential blockers early.
+**Test schedule and milestones:**
+
+|   Phase   |       Milestones        | Entry and exit criterias                                                                                                                                                                    |
+| :-------: | :---------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Planning  | 02.11.2026 - 13.11.2026 | Entry criteria: software requirement are defined, test strategy and test plan are finalized<br>Exit criteria: test plan is approved, testing team is assembled.                             |
+| Execution | 16.11.2026 - 27.11.2026 | Entry criteria: test environment is set up, test accounts are registered and have set test account balance. <br>Exit criteria: all test cases are concluded, log saved and defects tracked. |
+| Reporting | 30.11.2026 - 04.12.2026 | Entry criteria: execution phases is completed, defects are resolved or deferred for next sprint. <br>Exit criteria: test summary and bug reports are finalized.                             |
+
+**Top 3 risks** 
+* Broken core feature of the SigmaBankApp
+* Increased software development cost 
+* Delayed launch of the SigmaBankApp
+
+
+
+
+
+
 2.  Twelve test cases from your week 3 design work, in full format, each traced to a requirement.
 
 | Test ID |                     Traces to                     |                       Preconditions                       |                                              Test data / steps                                             |                                                                                Expected result                                                                               |
