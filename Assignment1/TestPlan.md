@@ -68,7 +68,7 @@ Risks and mitigation – Identify potential blockers early.
 
 6.  AI appendix (Level 1): prompts used, raw output, what you changed and why.
 
-	Prompt used: “Here is a description for the bank application that has following limitation regarding money transfers:
+Prompt used: Here is a description for the bank application that has following limitation regarding money transfers:
 
 Amount: 100 to 500,000 KZT per transfer, whole tenge only.
 Daily limit: 1,000,000 KZT across all transfers, reset at midnight Almaty time.
@@ -80,59 +80,43 @@ If the amount and the daily limit are both violated, the amount error is shown.
 
 Here is decision table:
 
-        R1    R2    R3    R4    R5    R6    R7    R8
-Condition 1    Amount is between 100 - 500 000    T    T    T    T    F    F    F    F
-Condition 2    Daily total transfer <= 1 000 000    T    T    F    F    T    T    F    F
-Condition 3    Transfer amount above 100 000    T    F    T    F    T    F    T    F
-Action 1    Execute        X                        
-Action 2    Reject: daily total limit exceeded            X    X                
-Action 3    Reject: amount not in limit                    X    X    X    X
-Action 4    Ask for SMS code    X                            
+|             |                                    | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 |
+|-------------|------------------------------------|----|----|----|----|----|----|----|----|
+| Condition 1 | Amount is between 100 - 500 000    |  T |  T |  T |  T |  F |  F |  F |  F |
+| Condition 2 | Daily total transfer <= 1 000 000  |  T |  T |  F |  F |  T |  T |  F |  F |
+| Condition 3 | Transfer amount above 100 000      |  T |  F |  T |  F |  T |  F |  T |  F |
+| Action 1    | Execute                            |    |  X |    |    |    |    |    |    |
+| Action 2    | Reject: daily total limit exceeded |    |    |  X |  X |    |    |    |    |
+| Action 3    | Reject: amount not in limit        |    |    |    |    |  X |  X |  X |  X |
+| Action 4    | Ask for SMS code                   |  X |    |    |    |    |    |    |    |
 
 
 as well as state table:
-    Events        
-State    Incorrect code    Correct code    wait > 120s
-S1: Attempt #1    Attempt #2    Transfer money    Expired
-S2: Attempt #2    Attempt #3    Transfer money    Expired
-S3: Attempt #3    Cancelled    Transfer money    Expired
-S4: Cancel transfer    N/A    N/A    N/A
-S5: Transfer money    N/A    N/A    N/A
-S6: Expired    N/A    N/A    N/A
+|                     |     Events     |                |             |
+|---------------------|:--------------:|:--------------:|:-----------:|
+|        State        | Incorrect code |  Correct code  | wait > 120s |
+|    S1: Attempt #1   |   Attempt #2   | Transfer money |   Expired   |
+|    S2: Attempt #2   |   Attempt #3   | Transfer money |   Expired   |
+|    S3: Attempt #3   |    Cancelled   | Transfer money |   Expired   |
+| S4: Cancel transfer |       N/A      |       N/A      |     N/A     |
+|  S5: Transfer money |       N/A      |       N/A      |     N/A     |
+|     S6: Expired     |       N/A      |       N/A      |     N/A     |
 
 
 and state transition table
-#    Transition
-1    "Start state: Attempt #1
-Event: Incorrect code
-End state: Attempt #2"
-2    "Start state: Attempt #2
-Event: Incorrect code
-End state: Attempt #3"
-3    "Start state: Attempt #3
-Event: Incorrect code
-End state: Cancelled"
-4    "Start state: Attempt #1
-Event: Correct code
-End state: Confirmed"
-5    "Start state: Attempt #2
-Event: Correct code
-End state: Confirmed"
-6    "Start state: Attempt #3
-Event: Correct code
-End state: Confirmed"
-7    "Start state: Attempt #1
-Event: wait > 120s
-End state: Expired"
-8    "Start state: Attempt #1
-Event: wait > 120s
-End state: Expired"
-9    "Start state: Attempt #1
-Event: wait > 120s
-End state: Expired"
+| # |                              Transition                             |
+|:-:|:-------------------------------------------------------------------:|
+| 1 | Start state: Attempt #1 Event: Incorrect code End state: Attempt #2 |
+| 2 | Start state: Attempt #2 Event: Incorrect code End state: Attempt #3 |
+| 3 |  Start state: Attempt #3 Event: Incorrect code End state: Cancelled |
+| 4 |   Start state: Attempt #1 Event: Correct code End state: Confirmed  |
+| 5 |   Start state: Attempt #2 Event: Correct code End state: Confirmed  |
+| 6 |   Start state: Attempt #3 Event: Correct code End state: Confirmed  |
+| 7 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
+| 8 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
+| 9 |    Start state: Attempt #1 Event: wait > 120s End state: Expired    |
 
-
-your task is to create twelve test cases based on the information below in full format, each traced to a requirement.”
+your task is to create twelve test cases based on the information below in full format, each traced to a requirement. End of prompt
 
 
 References: 
