@@ -1,41 +1,45 @@
+using System.Globalization;
 using Microsoft.Playwright;
-using SIS2.data;
 
 namespace SIS2.pages
 {
-    /// <summary>A single product's detail page.</summary>
-    public class ProductPage
+    /// <summary>Finding a product (search on the shop's home page) and its detail page.</summary>
+    public class ProductPage : BasePage
     {
-        public readonly IPage _page;
+        public ProductPage(IPage page) : base(page) { }
 
-        public ProductPage(IPage page)
-        {
-            _page = page;
-        }
+        // Search on the home page
+        public ILocator SearchInput => Page.GetByTestId("search-query");
+        public ILocator SearchButton => Page.GetByTestId("search-submit");
+        public ILocator SearchTerm => Page.GetByTestId("search-term");
 
-        public ILocator Name => _page.GetByTestId("product-name");
-        public ILocator UnitPrice => _page.GetByTestId("unit-price");
-        /// <summary>Quantity box. It is disabled for typing; use the +/- buttons.</summary>
-        public ILocator Quantity => _page.GetByTestId("quantity");
-        public ILocator IncreaseQuantityButton => _page.GetByTestId("increase-quantity");
-        public ILocator AddToCartButton => _page.GetByTestId("add-to-cart");
-
-        /// <summary>"Out of stock" label. When it shows, quantity and "Add to cart" are disabled.</summary>
-        public ILocator OutOfStockLabel => _page.GetByTestId("out-of-stock");
-
-        /// <summary>Confirmation that pops up after "Add to cart".</summary>
+        // Product detail
+        public ILocator Name => Page.GetByTestId("product-name");
+        public ILocator UnitPrice => Page.GetByTestId("unit-price");
+        public ILocator Quantity => Page.GetByTestId("quantity");
+        public ILocator IncreaseQuantityButton => Page.GetByTestId("increase-quantity");
+        public ILocator AddToCartButton => Page.GetByTestId("add-to-cart");
+        public ILocator OutOfStockLabel => Page.GetByTestId("out-of-stock");
         public ILocator AddedToCartAlert =>
-            _page.GetByRole(AriaRole.Alert).Filter(new() { HasTextString = "Product added to shopping cart" });
-
-        /// <summary>Number badge on the cart icon in the navbar.</summary>
-        public ILocator CartBadge => _page.GetByTestId("cart-quantity");
-        public ILocator CartLink => _page.GetByTestId("nav-cart");
+            Page.GetByRole(AriaRole.Alert).Filter(new() { HasTextString = "Product added to shopping cart" });
 
         /// <summary>
-        /// Raises the quantity from its starting value of 1 by clicking "+".
-        /// The quantity box itself is disabled, so it cannot be typed into.
-        /// The test asserts the resulting value.
+        /// Searches for the product and opens it. Products are found by name, not by
+        /// URL, because product ids change when the demo database is reset.
         /// </summary>
+        public async Task SearchAndOpenAsync(string name)
+        {
+            await OpenAsync("/");
+            await SearchInput.FillAsync(name);
+            await SearchButton.ClickAsync();
+            await SearchTerm.Filter(new() { HasTextString = name }).WaitForAsync(); // results are in
+
+            // Exact name: a search for "Pliers" also lists "Slip Joint Pliers".
+            var exactName = new Regex("^\\s*" + Regex.Escape(name) + "\\s*$");
+            await Page.GetByTestId("product-name").Filter(new() { HasTextRegex = exactName }).ClickAsync();
+        }
+
+        /// <summary>Quantity starts at 1 and the box can't be typed into, so click "+".</summary>
         public async Task SetQuantityAsync(int quantity)
         {
             for (var current = 1; current < quantity; current++)
@@ -44,16 +48,12 @@ namespace SIS2.pages
             }
         }
 
-        public async Task AddToCartAsync()
+        public async Task<(string Name, decimal Price)> ReadNameAndPriceAsync()
         {
-            await AddToCartButton.ClickAsync();
+            var name = (await Name.InnerTextAsync()).Trim();
+            var price = decimal.Parse((await UnitPrice.InnerTextAsync()).Replace("$", "").Trim(),
+                CultureInfo.InvariantCulture);
+            return (name, price);
         }
-
-        /// <summary>
-        /// Reads name and price. Call it after asserting the page shows the expected
-        /// product, so the values come from a fully loaded page.
-        /// </summary>
-        public async Task<ProductSnapshot> CaptureAsync() =>
-            new((await Name.InnerTextAsync()).Trim(), Prices.Parse(await UnitPrice.InnerTextAsync()));
     }
 }

@@ -1,16 +1,9 @@
 namespace SIS2.data
 {
-    /// <summary>
-    /// Products the tests work with. They come from the site's standard catalogue.
-    /// Tests find them by searching for the name, never by product id,
-    /// because ids are regenerated when the demo database is reset.
-    /// </summary>
     public static class Products
     {
-        // Buy a product.
-        // Stock on the shared site goes up and down as people (and our own test runs)
-        // buy things, so no single product is guaranteed to be in stock. The test buys
-        // the first product from this list that is in stock at the moment it runs.
+        // Buy a product: stock on the shared site changes all the time, so the test buys
+        // the first product from this list that is in stock when it runs.
         public static readonly string[] BuyCandidates =
         {
             "Adjustable Wrench",
@@ -60,20 +53,10 @@ namespace SIS2.data
             "Wood Saw",
         };
         public const int QuantityToBuy = 2;
+        public const string PaymentMethod = "cash-on-delivery"; // needs no extra card/bank fields
 
-        // Compare two products.
-        // The comparison we state: Bolt Cutters cost more than Slip Joint Pliers.
+        // Compare two products. Stated comparison: Bolt Cutters cost more than Slip Joint Pliers.
         public const string MoreExpensive = "Bolt Cutters";
         public const string Cheaper = "Slip Joint Pliers";
     }
-
-    /// <summary>Payment methods offered in the checkout's last step (option values).</summary>
-    public static class PaymentMethods
-    {
-        // Needs no extra card/bank fields, so the test stays about the purchase itself.
-        public const string CashOnDelivery = "cash-on-delivery";
-    }
-
-    /// <summary>Name and price of a product exactly as the page showed them.</summary>
-    public sealed record ProductSnapshot(string Name, decimal Price);
 }

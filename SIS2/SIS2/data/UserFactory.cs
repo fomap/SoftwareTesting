@@ -1,53 +1,41 @@
 namespace SIS2.data
 {
+    public sealed record Customer(
+        string FirstName, string LastName, string DateOfBirth,
+        string Country, string PostalCode, string HouseNumber,
+        string Street, string City, string State,
+        string Phone, string Email, string Password)
+    {
+        public string FullName => $"{FirstName} {LastName}";
+    }
+
     /// <summary>
-    /// Builds test users. Tests ask for a user here and never hard-code one.
+    /// Fresh test users. Every call returns a new, never-used email
+    /// (timestamp + GUID), so runs and parallel tests never collide.
+    /// The seeded accounts (customer@ / customer2@practicesoftwaretesting.com, welcome01)
+    /// are not used: other people's failed logins lock them, and a password reset
+    /// would change them for everyone.
     /// </summary>
     public static class UserFactory
     {
-        private static readonly string[] FirstNames = { "Aruzhan", "Dias", "Madina", "Timur", "Aigerim", "Nurlan", "Dana", "Arman" };
-        private static readonly string[] LastNames = { "Tester", "Qa", "Automation", "Checker", "Verifier", "Runner" };
+        public static Customer NewCustomer() => new(
+            FirstName: "Dana",
+            LastName: "Tester",
+            DateOfBirth: "1995-04-12",
+            Country: "KZ",
+            PostalCode: "050000",
+            HouseNumber: "12",
+            Street: "Abay Avenue",
+            City: "Almaty",
+            State: "Almaty",
+            Phone: "77011234567",
+            Email: $"sis2.{Unique()}@example.com",
+            Password: $"Sis2#{Guid.NewGuid():N}"[..17] + "Aa9"); // upper, lower, digit, symbol
 
-        /// <summary>
-        /// A brand-new customer that has never been registered.
-        /// The email gets a millisecond UTC timestamp plus a GUID fragment, so two calls
-        /// never collide: not between runs, not between tests running in parallel,
-        /// and not with other people using the same public site.
-        /// </summary>
-        public static CustomerData NewCustomer()
-        {
-            var rnd = Random.Shared; // thread-safe
+        public static string UnregisteredEmail() => $"sis2.nobody.{Unique()}@example.com";
 
-            return new CustomerData(
-                FirstName: Pick(FirstNames),
-                LastName: Pick(LastNames),
-                DateOfBirth: DateTime.UtcNow.Date.AddYears(-rnd.Next(20, 60)).AddDays(-rnd.Next(0, 365)).ToString("yyyy-MM-dd"),
-                CountryCode: "KZ",
-                PostalCode: "050000",
-                HouseNumber: rnd.Next(1, 200).ToString(),
-                Street: "Abay Avenue",
-                City: "Almaty",
-                State: "Almaty",
-                Phone: "7701" + rnd.Next(1000000, 9999999),
-                Email: UniqueEmail("sis2"),
-                Password: NewPassword());
-        }
+        public static string WrongPassword() => $"Wrong#{Guid.NewGuid():N}"[..18] + "Aa9";
 
-        /// <summary>An email address that is guaranteed not to belong to any account.</summary>
-        public static string UnregisteredEmail() => UniqueEmail("sis2.nobody");
-
-        /// <summary>
-        /// A valid-looking password that is different from every password the factory hands out.
-        /// Use it to try logging in with the wrong password.
-        /// </summary>
-        public static string WrongPassword() => "Wrong#" + NewPassword();
-
-        // Meets the site's rules: 8+ chars, upper + lower case, a digit, a special symbol.
-        private static string NewPassword() => $"Sis2#{Guid.NewGuid():N}"[..17] + "Aa9";
-
-        private static string UniqueEmail(string prefix) =>
-            $"{prefix}.{DateTime.UtcNow:yyyyMMddHHmmssfff}.{Guid.NewGuid():N}"[..(prefix.Length + 31)] + "@example.com";
-
-        private static string Pick(string[] values) => values[Random.Shared.Next(values.Length)];
+        private static string Unique() => $"{DateTime.UtcNow:yyyyMMddHHmmssfff}.{Guid.NewGuid():N}"[..30];
     }
 }

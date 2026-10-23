@@ -71,5 +71,5 @@ DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext co
 
  <PM_5>
  the AddToCart_CartShowsItemAndQuantity_CheckoutCompletes fails because product put 
- into the Products is Out of stock, how to change the test so it takes it into account?
+ into the Products is Out of stock, how to change the test so it takes it into account? (ask what do they do in prod)
  </PM_5>

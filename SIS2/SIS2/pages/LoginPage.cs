@@ -1,37 +1,41 @@
 using Microsoft.Playwright;
-using SIS2.fixtures;
 
 namespace SIS2.pages
 {
-    public class LoginPage
+    /// <summary>Login page and the "Forgot your password?" page reached from it.</summary>
+    public class LoginPage : BasePage
     {
-        public readonly IPage _page;
+        public LoginPage(IPage page) : base(page) { }
 
-        public LoginPage(IPage page)
-        {
-            _page = page;
-        }
+        public ILocator Email => Page.GetByTestId("email");
+        public ILocator Password => Page.GetByTestId("password");
+        public ILocator LoginButton => Page.GetByTestId("login-submit");
+        public ILocator LoginError => Page.GetByTestId("login-error");
 
-        public const string Path = "/auth/login";
+        // Forgot password
+        public ILocator ResetButton => Page.GetByTestId("forgot-password-submit");
 
-        public ILocator Email => _page.GetByTestId("email");
-        public ILocator Password => _page.GetByTestId("password");
-        public ILocator SubmitButton => _page.GetByTestId("login-submit");
-        public ILocator LoginError => _page.GetByTestId("login-error");
+        /// <summary>
+        /// Result of a reset request. It only has role="alert" (no data-test)
+        /// and disappears after about 3 seconds.
+        /// </summary>
+        public ILocator ResetResult => Page.GetByRole(AriaRole.Alert);
 
-        /// <summary>"Sign in" link in the navbar; only there while nobody is signed in.</summary>
-        public ILocator NavSignIn => _page.GetByTestId("nav-sign-in");
+        public Task OpenAsync() => OpenAsync("/auth/login");
 
-        public async Task GotoAsync()
-        {
-            await _page.GotoAsync(BaseTest.BaseUrl + Path);
-        }
+        public Task OpenForgotPasswordAsync() => OpenAsync("/auth/forgot-password");
 
         public async Task LoginAsync(string email, string password)
         {
             await Email.FillAsync(email);
             await Password.FillAsync(password);
-            await SubmitButton.ClickAsync();
+            await LoginButton.ClickAsync();
+        }
+
+        public async Task RequestPasswordResetAsync(string email)
+        {
+            await Email.FillAsync(email);
+            await ResetButton.ClickAsync();
         }
     }
 }
