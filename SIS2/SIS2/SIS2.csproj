@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Screenshots\**" />
+    <EmbeddedResource Remove="Screenshots\**" />
+    <None Remove="Screenshots\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
@@ -29,7 +35,6 @@
   <ItemGroup>
     <Folder Include="data\" />
     <Folder Include="fixtures\" />
-    <Folder Include="Screenshots\" />
     <Folder Include="tests\" />
   </ItemGroup>
 

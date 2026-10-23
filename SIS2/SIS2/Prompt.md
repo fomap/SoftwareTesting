@@ -1,4 +1,6 @@
-﻿<PM_1>
+﻿model: Claude Opus 5.5 Medium
+
+<PM_1>
 Your task is to create automated test using playwright and dotnet. The test case you need to test is following:
 Test case; Register a new customer
 What it must prove:  A unique new account is created and the user ends up signed in or on the login page.   
@@ -73,3 +75,12 @@ DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext co
  the AddToCart_CartShowsItemAndQuantity_CheckoutCompletes fails because product put 
  into the Products is Out of stock, how to change the test so it takes it into account? (ask what do they do in prod)
  </PM_5>
+
+
+  <PM_6>
+  dont u think u generated more code than was needed and why
+  </PM_6>
+
+  <PM_7>
+  okay, do it but make sure that they cover the requirements and current way u test things
+  </PM_7>

@@ -8,7 +8,7 @@
 		<BrowserName>chromium</BrowserName>
 		<LaunchOptions>
 			<Headless>false</Headless>
-			<SlowMo>1000</SlowMo>
+			<SlowMo>1500</SlowMo>
 			<!-- ms pause after every Playwright action -->
 		</LaunchOptions>
 	</Playwright>
