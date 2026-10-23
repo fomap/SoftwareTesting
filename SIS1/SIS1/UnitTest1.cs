@@ -1,4 +1,5 @@
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
+
 
 namespace SIS1
 {
@@ -43,6 +44,37 @@ namespace SIS1
             await page.ClickAsync("[name='btnLogin']");
 
         }
+
+        [Test]
+        public async Task Test3()
+        {
+            var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+            var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = false,
+                Args = new[] {
+                            "--disable-blink-features=AutomationControlled"
+
+                }
+            });
+
+            var context = await browser.NewContextAsync();
+            var page = await context.NewPageAsync();
+
+            await page.GotoAsync("https://www.google.com/");
+
+            var searchBox = page.GetByRole(AriaRole.Combobox, new() { NameRegex = new Regex("Іздеу") });
+            await searchBox.FillAsync("Ariana Grande");
+
+            await searchBox.PressAsync("Enter");
+
+            await Expect(page.Locator("#main")).ToContainTextAsync("Ariana Grande");
+
+
+        }
+
+
+
 
     }
 }
