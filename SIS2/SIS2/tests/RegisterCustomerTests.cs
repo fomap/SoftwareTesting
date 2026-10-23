@@ -6,7 +6,7 @@ using SIS2.pages;
 namespace SIS2.tests
 {
     /// <summary>
-    /// Test case: Register a new customer.
+    /// Test case 1: Register a new customer.
     /// Must prove: a unique new account is created and the user ends up signed in
     /// or on the login page.
     ///
@@ -22,10 +22,6 @@ namespace SIS2.tests
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     public class RegisterCustomerTests : BaseTest
     {
-        // The site is public and shared, so the API can be slow. Give navigation-based
-        // assertions more room than the 5 s default. This is a max, not a fixed wait.
-        private static readonly float SlowServerTimeout = 15_000;
-
         private RegisterPage _registerPage = null!;
         private LoginPage _loginPage = null!;
         private AccountPage _accountPage = null!;
@@ -46,16 +42,14 @@ namespace SIS2.tests
             await _registerPage.GotoAsync();
             await _registerPage.RegisterAsync(customer);
 
-            // 1. The user ends up on the login page, and no registration error is shown.
-            await Expect(Page).ToHaveURLAsync(new Regex(Regex.Escape(LoginPage.Path) + "$"),
-                new() { Timeout = SlowServerTimeout });
+            // 1. The user ends up on the login page.
+            await Expect(Page).ToHaveURLAsync(UrlEndsWith(LoginPage.Path), new() { Timeout = SlowServerTimeout });
             await Expect(_loginPage.SubmitButton).ToBeVisibleAsync();
 
             // 2. The account really exists: its credentials work and open *this* user's account.
             await _loginPage.LoginAsync(customer.Email, customer.Password);
 
-            await Expect(Page).ToHaveURLAsync(new Regex(Regex.Escape(AccountPage.Path) + "$"),
-                new() { Timeout = SlowServerTimeout });
+            await Expect(Page).ToHaveURLAsync(UrlEndsWith(AccountPage.Path), new() { Timeout = SlowServerTimeout });
             await Expect(_accountPage.PageTitle).ToHaveTextAsync("My account");
             await Expect(_accountPage.UserMenu).ToContainTextAsync(customer.FullName);
         }
@@ -68,16 +62,14 @@ namespace SIS2.tests
             // First registration succeeds.
             await _registerPage.GotoAsync();
             await _registerPage.RegisterAsync(customer);
-            await Expect(Page).ToHaveURLAsync(new Regex(Regex.Escape(LoginPage.Path) + "$"),
-                new() { Timeout = SlowServerTimeout });
+            await Expect(Page).ToHaveURLAsync(UrlEndsWith(LoginPage.Path), new() { Timeout = SlowServerTimeout });
 
             // Second registration with the same email must not create another account.
             await _registerPage.GotoAsync();
             await _registerPage.RegisterAsync(customer);
 
-            await Expect(_registerPage.RegisterError).ToContainTextAsync("already exists",
-                new() { Timeout = SlowServerTimeout });
-            await Expect(Page).ToHaveURLAsync(new Regex(Regex.Escape(RegisterPage.Path) + "$"));
+            await Expect(_registerPage.RegisterError).ToContainTextAsync("already exists", new() { Timeout = SlowServerTimeout });
+            await Expect(Page).ToHaveURLAsync(UrlEndsWith(RegisterPage.Path));
         }
     }
 }

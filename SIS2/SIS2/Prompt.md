@@ -19,3 +19,17 @@ For registration you will need to generate test data, here are the requirements:
 
 Ask clarifying questions if needed.
 </PM_1>
+ 
+
+ <PM_2>
+ now you have to make the same job but for the following test cases
+
+2) Log in  = Valid credentials reach the account page; invalid ones show the error and do not.                      
+3) Buy a product = Add to cart -> cart shows the right item and quantity -> checkout completes.   
+4) Compare two products  =  Open two products, capture name and price, assert the comparison you state.                  
+5) Reset a password  = The forgot-password flow gives the expected confirmation for a known email, and an error for an invalid one. 
+
+
+Ask clarifying questions if needed.
+ </PM_2>
+

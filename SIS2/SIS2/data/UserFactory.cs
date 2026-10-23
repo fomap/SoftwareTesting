@@ -16,7 +16,6 @@ namespace SIS2.data
         /// </summary>
         public static CustomerData NewCustomer()
         {
-            var unique = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}.{Guid.NewGuid():N}"[..30];
             var rnd = Random.Shared; // thread-safe
 
             return new CustomerData(
@@ -30,10 +29,24 @@ namespace SIS2.data
                 City: "Almaty",
                 State: "Almaty",
                 Phone: "7701" + rnd.Next(1000000, 9999999),
-                Email: $"sis2.{unique}@example.com",
-                // Meets the site's rules: 8+ chars, upper + lower, digit, special symbol.
-                Password: $"Sis2#{Guid.NewGuid():N}"[..17] + "Aa9");
+                Email: UniqueEmail("sis2"),
+                Password: NewPassword());
         }
+
+        /// <summary>An email address that is guaranteed not to belong to any account.</summary>
+        public static string UnregisteredEmail() => UniqueEmail("sis2.nobody");
+
+        /// <summary>
+        /// A valid-looking password that is different from every password the factory hands out.
+        /// Use it to try logging in with the wrong password.
+        /// </summary>
+        public static string WrongPassword() => "Wrong#" + NewPassword();
+
+        // Meets the site's rules: 8+ chars, upper + lower case, a digit, a special symbol.
+        private static string NewPassword() => $"Sis2#{Guid.NewGuid():N}"[..17] + "Aa9";
+
+        private static string UniqueEmail(string prefix) =>
+            $"{prefix}.{DateTime.UtcNow:yyyyMMddHHmmssfff}.{Guid.NewGuid():N}"[..(prefix.Length + 31)] + "@example.com";
 
         private static string Pick(string[] values) => values[Random.Shared.Next(values.Length)];
     }

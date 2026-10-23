@@ -19,6 +19,9 @@ namespace SIS2.pages
         public ILocator SubmitButton => _page.GetByTestId("login-submit");
         public ILocator LoginError => _page.GetByTestId("login-error");
 
+        /// <summary>"Sign in" link in the navbar; only there while nobody is signed in.</summary>
+        public ILocator NavSignIn => _page.GetByTestId("nav-sign-in");
+
         public async Task GotoAsync()
         {
             await _page.GotoAsync(BaseTest.BaseUrl + Path);
