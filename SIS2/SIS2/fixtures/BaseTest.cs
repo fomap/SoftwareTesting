@@ -30,10 +30,12 @@ namespace SIS2.fixtures
         /// A fresh customer that already exists on the site (registered through the API).
         /// Used instead of the shared seeded accounts, which other people's failed
         /// logins can lock, and which a password reset would change for everyone.
+        /// Their address is the one the site's postcode lookup gives, so the server
+        /// accepts it as a billing address at checkout.
         /// </summary>
         protected async Task<CustomerData> CreateRegisteredCustomerAsync()
         {
-            var customer = UserFactory.NewCustomer();
+            var customer = await AccountApi.WithSiteAddressAsync(Playwright, UserFactory.NewCustomer());
             await AccountApi.RegisterAsync(Playwright, customer);
             return customer;
         }

@@ -34,8 +34,10 @@ namespace SIS2.tests
         public async Task AddToCart_CartShowsItemAndQuantity_CheckoutCompletes()
         {
             var customer = await CreateRegisteredCustomerAsync();
-            const string product = Products.ToBuy;
+            // Stock on the shared site changes all the time, so pick a product that is in stock now.
+            var product = await ProductApi.FirstInStockAsync(Playwright, Products.BuyCandidates);
             const int quantity = Products.QuantityToBuy;
+            NUnit.Framework.TestContext.Progress.WriteLine($"Buying {quantity} x {product}");
 
             // ---- Add to cart ----
             await _homePage.GotoAsync();
@@ -43,6 +45,9 @@ namespace SIS2.tests
             await _homePage.OpenProductAsync(product);
 
             await Expect(_productPage.Name).ToHaveTextAsync(product);
+            // The UI must agree it can be bought (someone may have bought the last one meanwhile).
+            await Expect(_productPage.OutOfStockLabel).ToBeHiddenAsync();
+            await Expect(_productPage.AddToCartButton).ToBeEnabledAsync();
             var unitPrice = (await _productPage.CaptureAsync()).Price;
 
             await Expect(_productPage.Quantity).ToHaveValueAsync("1");   // starting point
@@ -78,7 +83,15 @@ namespace SIS2.tests
             await Expect(_checkout.PaymentSuccessMessage).ToHaveTextAsync("Payment was successful",
                 new() { Timeout = SlowServerTimeout });
 
-            await _checkout.FinishButton.ClickAsync();                  // "Confirm"
+            // "Confirm" creates the order. If the server rejects it, the app shows nothing,
+            // so we check the server's answer directly to get a clear failure message.
+            var invoiceResponse = await Page.RunAndWaitForResponseAsync(
+                () => _checkout.FinishButton.ClickAsync(),
+                r => r.Url.EndsWith("/invoices") && r.Request.Method == "POST",
+                new() { Timeout = SlowServerTimeout });
+            Assert.That(invoiceResponse.Status, Is.EqualTo(201),
+                $"Order was rejected by the server: {await invoiceResponse.TextAsync()}");
+
             await Expect(_checkout.OrderConfirmation).ToHaveTextAsync(
                 new Regex(@"Thanks for your order! Your invoice number is INV-\d+"),
                 new() { Timeout = SlowServerTimeout });

@@ -20,6 +20,9 @@ namespace SIS2.pages
         public ILocator IncreaseQuantityButton => _page.GetByTestId("increase-quantity");
         public ILocator AddToCartButton => _page.GetByTestId("add-to-cart");
 
+        /// <summary>"Out of stock" label. When it shows, quantity and "Add to cart" are disabled.</summary>
+        public ILocator OutOfStockLabel => _page.GetByTestId("out-of-stock");
+
         /// <summary>Confirmation that pops up after "Add to cart".</summary>
         public ILocator AddedToCartAlert =>
             _page.GetByRole(AriaRole.Alert).Filter(new() { HasTextString = "Product added to shopping cart" });
