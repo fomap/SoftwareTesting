@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <Playwright>
-    <BrowserName>chromium</BrowserName>
-    <LaunchOptions>
-      <Headless>false</Headless>
-    </LaunchOptions>
-  </Playwright>
+	<NUnit>
+		<!-- 1 = tests run one at a time, so you can follow them. Remove for parallel runs. -->
+		<NumberOfTestWorkers>1</NumberOfTestWorkers>
+	</NUnit>
+	<Playwright>
+		<BrowserName>chromium</BrowserName>
+		<LaunchOptions>
+			<Headless>false</Headless>
+			<SlowMo>500</SlowMo>
+			<!-- ms pause after every Playwright action -->
+		</LaunchOptions>
+	</Playwright>
 </RunSettings>

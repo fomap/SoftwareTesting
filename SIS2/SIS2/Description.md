@@ -1,4 +1,3 @@
-Here is the list of test cases:
 
 | Test case              | What it must prove                                                                                     |
 |------------------------|--------------------------------------------------------------------------------------------------------|
@@ -8,4 +7,3 @@ Here is the list of test cases:
 | Compare two products   | Open two products, capture name and price, assert the comparison you state.                            |
 | Reset a password       | The forgot-password flow gives the expected confirmation for a known email, and an error for an invalid one. |
 
-Your task is to automate them. Look at existing pages folder. 
