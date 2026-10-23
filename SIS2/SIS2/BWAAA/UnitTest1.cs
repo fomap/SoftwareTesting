@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 
 
-namespace SIS2.Debug
+namespace SIS2.BWAAA
 {
     [Parallelizable(ParallelScope.Self)]
     [TestFixture]

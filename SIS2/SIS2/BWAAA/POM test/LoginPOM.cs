@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using SIS2.POM;
 
 
@@ -26,8 +24,6 @@ namespace SIS2
         {
             await _loginPage.GoTo();
             await _loginPage.Login("test", "test");
-
-
             await Expect(_computersPage.Navbar.Logout).ToBeVisibleAsync();
 
         }

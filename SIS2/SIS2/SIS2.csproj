@@ -25,4 +25,10 @@
     <Using Include="System.Threading.Tasks" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="fixtures\" />
+    <Folder Include="tests\" />
+  </ItemGroup>
+
 </Project>

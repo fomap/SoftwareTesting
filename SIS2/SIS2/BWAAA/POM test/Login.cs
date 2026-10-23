@@ -1,8 +1,4 @@
-﻿
-
-using Microsoft.Playwright;
-
-
+﻿using Microsoft.Playwright;
 
 namespace SIS2
 {

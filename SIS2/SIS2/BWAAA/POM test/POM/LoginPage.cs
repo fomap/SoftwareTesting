@@ -20,16 +20,11 @@ namespace SIS2.POM
             await Username.FillAsync(username);
             await Password.FillAsync(password);
             await LoginButton.ClickAsync();
-
         }
 
         public async Task GoTo()
         {
             await _page.GotoAsync("https://commitquality.com/login");
-
         }
-
-
-
     }
 }
