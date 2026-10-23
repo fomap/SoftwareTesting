@@ -1,9 +1,13 @@
+using Microsoft.Playwright;
+
 namespace SIS1
 {
     [Parallelizable(ParallelScope.Self)]
     [TestFixture]
     public class Tests : PageTest
     {
+        private IBrowser _browser;
+
         [Test]
         public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
         {
@@ -24,5 +28,21 @@ namespace SIS1
             // Expects the URL to contain intro.
             await Expect(Page).ToHaveURLAsync(new Regex(".*intro"));
         }
+
+
+        [Test]
+        public async Task Test1()
+        {
+            _browser = await Playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+            var page = await _browser.NewPageAsync();
+            //await page.GotoAsync("https://playwright.dev");
+            //await Expect(page).ToHaveTitleAsync(new Regex("Playwright"));
+
+            await page.GotoAsync("https://demo.guru99.com/");
+            await page.FillAsync("[name='emailid']", "mercury");
+            await page.ClickAsync("[name='btnLogin']");
+
+        }
+
     }
 }
