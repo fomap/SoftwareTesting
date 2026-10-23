@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 
 
-namespace SIS1
+namespace SIS1.Debug
 {
     [Parallelizable(ParallelScope.Self)]
     [TestFixture]
@@ -72,6 +72,19 @@ namespace SIS1
 
 
         }
+
+
+        [Test]
+        public async Task Run()
+        {
+            using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+            await using var browser = await playwright.Webkit.LaunchAsync();
+            var page = await browser.NewPageAsync();
+            await page.GotoAsync("https://www.theverge.com");
+            await page.ScreenshotAsync(new() { Path = "theverge.png" });
+        }
+
+
 
 
 
