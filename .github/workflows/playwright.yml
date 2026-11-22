@@ -18,13 +18,13 @@ jobs:
       SPRINT: sprint5
       DISABLE_LOGGING: "true"
       BASE_URL: http://localhost:4200
-      API_IRL: http://localhost:8091
+      API_URL: http://localhost:8091
     defaults:
       run:
         working-directory: SIS2/SIS2
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download app
         uses: actions/checkout@v5
@@ -35,9 +35,9 @@ jobs:
 
       - name: Start toolshop container
         working-directory: toolshop
-        run: docket compose -f docker-compose.yml up -days
+        run: docker compose -f docker-compose.yml up -d
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
           cache: true
@@ -51,6 +51,10 @@ jobs:
 
       - name: Install Playwright browsers
         run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps chromium
+
+      - name: Install the shop's PHP packages
+        working-directory: toolshop
+        run: docker compose exec -T -u root laravel-api composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-ffi
 
       - name: Wait for db
         working-directory: toolshop
@@ -92,7 +96,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results
           path: SIS2/SIS2/TestResults/
