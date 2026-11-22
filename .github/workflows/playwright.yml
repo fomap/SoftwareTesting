@@ -14,12 +14,12 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategyL:
+    strategy:
       fail-fast: false
       matrix:
         shardIndex: [1]
         shardTotal: [1]
-        
+
     env:
       SPRINT: sprint5
       DISABLE_LOGGING: "true"
