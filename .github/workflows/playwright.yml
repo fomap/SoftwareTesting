@@ -32,6 +32,10 @@ jobs:
           repository: testsmith-io/practice-software-testing
           ref: ae7caecb811dd8952c09d997e69be7cb946ecd44
           path: toolshop
+      
+      - name: Let the shop write its storage and cache folders
+        working-directory: toolshop/sprint5/API
+        run: chmod -R 777 storage bootstrap/cache
 
       - name: Start toolshop container
         working-directory: toolshop
