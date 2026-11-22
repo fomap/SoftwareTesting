@@ -14,12 +14,28 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      SPRINT: sprint5
+      DISABLE_LOGGING: "true"
+      BASE_URL: http://localhost:4200
+      API_IRL: http://localhost:8091
     defaults:
       run:
         working-directory: SIS2/SIS2
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download app
+        uses: actions/checkout@v5
+        with:
+          repository: testsmith-io/practice-software-testing
+          ref: ae7caecb811dd8952c09d997e69be7cb946ecd44
+          path: toolshop
+
+      - name: Start toolshop container
+        working-directory: toolshop
+        run: docket compose -f docker-compose.yml up -days
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -35,6 +51,35 @@ jobs:
 
       - name: Install Playwright browsers
         run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps chromium
+
+      - name: Wait for db
+        working-directory: toolshop
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose exec -T mariadb mysqladmin ping -h localhost -u root -proot --silent; then
+              echo "Database is ready"; exit 0
+            fi
+            echo "Waiting for database ($i/30)..."; sleep 2
+          done
+          echo "Database did not start"; exit 1
+
+      - name: Create and fill the database
+        working-directory: toolshop
+        run: docker compose exec -T laravel-api php artisan migrate:fresh --seed --force
+
+      - name: Wait for the shop website
+        working-directory: toolshop
+        run: |
+          for i in $(seq 1 90); do
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:4200 | grep -q 200; then
+              echo "Website is ready"; exit 0
+            fi
+            echo "Waiting for website ($i/90)..."; sleep 5
+          done
+          echo "Website did not start"; docker compose logs angular-ui; exit 1
+
+      - name: Check the API answers
+        run: curl --fail http://localhost:8091/status
 
       - name: Run Playwright tests
         run: >
@@ -52,3 +97,8 @@ jobs:
           name: test-results
           path: SIS2/SIS2/TestResults/
           retention-days: 14
+
+      - name: Show shop logs on failure
+        if: failure()
+        working-directory: toolshop
+        run: docker compose logs --tail=100

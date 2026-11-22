@@ -4,10 +4,11 @@ using System.Text.Json;
 
 namespace SIS2.fixtures
 {
-    /// <summary>Test setup through the shop's REST API (fast, and keeps tests about their own flow).</summary>
+
     public static class ApiSetup
     {
-        private const string ApiUrl = "https://api.practicesoftwaretesting.com";
+        private static readonly string ApiUrl =
+            Environment.GetEnvironmentVariable("API_URL") ?? "https://api.practicesoftwaretesting.com";
 
         public static async Task<Customer> RegisterNewCustomerAsync(IPlaywright playwright)
         {

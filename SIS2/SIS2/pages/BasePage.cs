@@ -2,10 +2,11 @@ using Microsoft.Playwright;
 
 namespace SIS2.pages
 {
-    /// <summary>What every page of the shop shares: the browser page, the URL and the navbar.</summary>
+
     public abstract class BasePage
     {
-        public const string BaseUrl = "https://practicesoftwaretesting.com";
+        public static readonly string BaseUrl =
+            Environment.GetEnvironmentVariable("BASE_URL") ?? "https://practicesoftwaretesting.com";
 
         protected readonly IPage Page;
 
