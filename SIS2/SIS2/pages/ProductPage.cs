@@ -1,5 +1,5 @@
-using System.Globalization;
 using Microsoft.Playwright;
+using System.Globalization;
 
 namespace SIS2.pages
 {
@@ -38,6 +38,8 @@ namespace SIS2.pages
             var exactName = new Regex("^\\s*" + Regex.Escape(name) + "\\s*$");
             await Page.GetByTestId("product-name").Filter(new() { HasTextRegex = exactName }).ClickAsync();
         }
+
+        public Task OpenByIdAsync(string id) => OpenAsync($"/product/{id}");
 
         /// <summary>Quantity starts at 1 and the box can't be typed into, so click "+".</summary>
         public async Task SetQuantityAsync(int quantity)

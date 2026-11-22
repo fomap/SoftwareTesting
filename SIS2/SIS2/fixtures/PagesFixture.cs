@@ -29,6 +29,33 @@ namespace SIS2.fixtures
             CheckoutPage = new CheckoutPage(Page);
         }
 
+        [SetUp]
+        public async Task StartTracing()
+        {
+            await Context.Tracing.StartAsync(new()
+            {
+                Title = TestContext.CurrentContext.Test.FullName,
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true,
+            });
+        }
+
+        [TearDown]
+        public async Task StopTracing()
+        {
+            var outcome = TestContext.CurrentContext.Result.Outcome.Status;
+            var failed = outcome == NUnit.Framework.Interfaces.TestStatus.Failed;
+
+            await Context.Tracing.StopAsync(new()
+            {
+                Path = failed
+                    ? Path.Combine(TestContext.CurrentContext.WorkDirectory, "playwright-traces", $"{TestContext.CurrentContext.Test.FullName}.zip") : null,
+            });
+        }
+
+
+
         /// <summary>A brand-new customer, registered through the API so the test can log in straight away.</summary>
         protected Task<Customer> CreateRegisteredCustomerAsync() =>
             ApiSetup.RegisterNewCustomerAsync(Playwright);
