@@ -7,13 +7,13 @@ namespace SIS2.pages
     {
         public LoginPage(IPage page) : base(page) { }
 
-        public ILocator Email => Page.GetByTestId("email");
-        public ILocator Password => Page.GetByTestId("password");
-        public ILocator LoginButton => Page.GetByTestId("login-submit");
-        public ILocator LoginError => Page.GetByTestId("login-error");
+        public ILocator Email => TestId("email");
+        public ILocator Password => TestId("password");
+        public ILocator LoginButton => TestId("login-submit");
+        public ILocator LoginError => TestId("login-error");
 
         // Forgot password
-        public ILocator ResetButton => Page.GetByTestId("forgot-password-submit");
+        public ILocator ResetButton => TestId("forgot-password-submit");
 
         /// <summary>
         /// Result of a reset request. It only has role="alert" (no data-test)

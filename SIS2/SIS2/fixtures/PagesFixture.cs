@@ -19,9 +19,6 @@ namespace SIS2.fixtures
         [SetUp]
         public void CreatePages()
         {
-            // The app marks elements with data-test="...", so GetByTestId() should use that.
-            Playwright.Selectors.SetTestIdAttribute("data-test");
-
             RegisterPage = new RegisterPage(Page);
             LoginPage = new LoginPage(Page);
             ProductPage = new ProductPage(Page);

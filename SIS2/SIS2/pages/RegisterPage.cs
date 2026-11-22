@@ -7,19 +7,19 @@ namespace SIS2.pages
     {
         public RegisterPage(IPage page) : base(page) { }
 
-        public ILocator FirstName => Page.GetByTestId("first-name");
-        public ILocator LastName => Page.GetByTestId("last-name");
-        public ILocator DateOfBirth => Page.GetByTestId("dob");
-        public ILocator Country => Page.GetByTestId("country");
-        public ILocator PostalCode => Page.GetByTestId("postal_code");
-        public ILocator HouseNumber => Page.GetByTestId("house_number");
-        public ILocator Street => Page.GetByTestId("street");
-        public ILocator City => Page.GetByTestId("city");
-        public ILocator State => Page.GetByTestId("state");
-        public ILocator Phone => Page.GetByTestId("phone");
-        public ILocator Email => Page.GetByTestId("email");
-        public ILocator Password => Page.GetByTestId("password");
-        public ILocator SubmitButton => Page.GetByTestId("register-submit");
+        public ILocator FirstName => TestId("first-name");
+        public ILocator LastName => TestId("last-name");
+        public ILocator DateOfBirth => TestId("dob");
+        public ILocator Country => TestId("country");
+        public ILocator PostalCode => TestId("postal_code");
+        public ILocator HouseNumber => TestId("house_number");
+        public ILocator Street => TestId("street");
+        public ILocator City => TestId("city");
+        public ILocator State => TestId("state");
+        public ILocator Phone => TestId("phone");
+        public ILocator Email => TestId("email");
+        public ILocator Password => TestId("password");
+        public ILocator SubmitButton => TestId("register-submit");
 
         public Task OpenAsync() => OpenAsync("/auth/register");
 
