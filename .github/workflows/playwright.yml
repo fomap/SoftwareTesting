@@ -136,20 +136,20 @@ jobs:
         run: docker compose logs --tail=100
 
     merge-reports:
-    name: Merge reports
-    if: ${{ !cancelled() }}
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all shard results
-        uses: actions/download-artifact@v5
-        with:
-          pattern: test-results-*
-          path: all-results
+      name: Merge reports
+      if: ${{ !cancelled() }}
+      needs: [test]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Download all shard results
+          uses: actions/download-artifact@v5
+          with:
+            pattern: test-results-*
+            path: all-results
 
-      - name: Upload combined report
-        uses: actions/upload-artifact@v5
-        with:
-          name: test-report
-          path: all-results
-          retention-days: 14
+        - name: Upload combined report
+          uses: actions/upload-artifact@v5
+          with:
+            name: test-report
+            path: all-results
+            retention-days: 14
