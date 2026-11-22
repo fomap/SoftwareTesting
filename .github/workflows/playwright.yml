@@ -1,0 +1,54 @@
+name: Playwright Tests
+
+on:
+  push:              
+  pull_request:      
+  workflow_dispatch: 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: SIS2/SIS2
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: SIS2/SIS2/packages.lock.json
+
+      - name: Install dependencies
+        run: dotnet restore --locked-mode
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Install Playwright browsers
+        run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: >
+          dotnet test --no-build
+          --settings ci.runsettings
+          --results-directory TestResults
+          --logger "junit;LogFileName=junit.xml"
+          --logger "html;LogFileName=report.html"
+          --logger "trx;LogFileName=results.trx"
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: SIS2/SIS2/TestResults/
+          retention-days: 14
