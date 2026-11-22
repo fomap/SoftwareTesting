@@ -103,7 +103,9 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: test-results
-          path: SIS2/SIS2/TestResults/
+          path: |
+            SIS2/SIS2/TestResults/
+            SIS2/SIS2/bin/Debug/net8.0/playwright-traces/
           retention-days: 14
 
       - name: Show shop logs on failure
