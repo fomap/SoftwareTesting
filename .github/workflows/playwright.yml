@@ -95,16 +95,32 @@ jobs:
       - name: Check the API answers
         run: curl --fail http://localhost:8091/status
 
+      - name: Pick this shard's tests
+        id: shard
+        run: |
+          dotnet test --no-build --list-tests \
+            | sed -n '/The following Tests are available:/,$p' | tail -n +2 \
+            | sed 's/^ *//' | grep -v '^$' | sort > all-tests.txt
+          echo "Full suite ($(wc -l < all-tests.txt) tests):"; cat all-tests.txt
+
+          awk -v i="${{ matrix.shardIndex }}" -v n="${{ matrix.shardTotal }}" \
+            '(NR - 1) % n == i - 1' all-tests.txt > shard-tests.txt
+          echo "Shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }} runs:"; cat shard-tests.txt
+
+          echo "filter=$(sed 's/^/Name=/' shard-tests.txt | paste -sd '|' -)" >> "$GITHUB_OUTPUT"
+
+
       - name: Run Playwright tests
         run: >
           dotnet test --no-build
           --settings ci.runsettings
+          --filter "${{ steps.shard.outputs.filter }}"
           --results-directory TestResults
           --logger "junit;LogFileName=junit.xml"
           --logger "html;LogFileName=report.html"
           --logger "trx;LogFileName=results.trx"
 
-      - name: Upload test results
+      - name: test-results-${{ matrix.shardIndex }}
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v5
         with:
@@ -118,3 +134,22 @@ jobs:
         if: failure()
         working-directory: toolshop
         run: docker compose logs --tail=100
+
+    merge-reports:
+    name: Merge reports
+    if: ${{ !cancelled() }}
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all shard results
+        uses: actions/download-artifact@v5
+        with:
+          pattern: test-results-*
+          path: all-results
+
+      - name: Upload combined report
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-report
+          path: all-results
+          retention-days: 14
