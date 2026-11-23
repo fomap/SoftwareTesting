@@ -19,15 +19,39 @@ namespace SIS2.fixtures
         [SetUp]
         public void CreatePages()
         {
-            // The app marks elements with data-test="...", so GetByTestId() should use that.
-            Playwright.Selectors.SetTestIdAttribute("data-test");
-
             RegisterPage = new RegisterPage(Page);
             LoginPage = new LoginPage(Page);
             ProductPage = new ProductPage(Page);
             CartPage = new CartPage(Page);
             CheckoutPage = new CheckoutPage(Page);
         }
+
+        [SetUp]
+        public async Task StartTracing()
+        {
+            await Context.Tracing.StartAsync(new()
+            {
+                Title = TestContext.CurrentContext.Test.FullName,
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true,
+            });
+        }
+
+        [TearDown]
+        public async Task StopTracing()
+        {
+            var outcome = TestContext.CurrentContext.Result.Outcome.Status;
+            var failed = outcome == NUnit.Framework.Interfaces.TestStatus.Failed;
+
+            await Context.Tracing.StopAsync(new()
+            {
+                Path = failed
+                    ? Path.Combine(TestContext.CurrentContext.WorkDirectory, "playwright-traces", $"{TestContext.CurrentContext.Test.FullName}.zip") : null,
+            });
+        }
+
+
 
         /// <summary>A brand-new customer, registered through the API so the test can log in straight away.</summary>
         protected Task<Customer> CreateRegisteredCustomerAsync() =>

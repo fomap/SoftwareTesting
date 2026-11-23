@@ -2,10 +2,11 @@ using Microsoft.Playwright;
 
 namespace SIS2.pages
 {
-    /// <summary>What every page of the shop shares: the browser page, the URL and the navbar.</summary>
+
     public abstract class BasePage
     {
-        public const string BaseUrl = "https://practicesoftwaretesting.com";
+        public static readonly string BaseUrl =
+            Environment.GetEnvironmentVariable("BASE_URL") ?? "https://practicesoftwaretesting.com";
 
         protected readonly IPage Page;
 
@@ -14,17 +15,19 @@ namespace SIS2.pages
             Page = page;
         }
 
+        protected ILocator TestId(string id) => Page.Locator($"[data-test=\"{id}\"]");
+
         protected async Task OpenAsync(string path)
         {
             await Page.GotoAsync(BaseUrl + path);
         }
 
-        public ILocator PageTitle => Page.GetByTestId("page-title");
+        public ILocator PageTitle => TestId("page-title");
 
         // Navbar
-        public ILocator NavSignIn => Page.GetByTestId("nav-sign-in"); // only while signed out
-        public ILocator UserMenu => Page.GetByTestId("nav-menu");     // shows the user's full name
-        public ILocator CartBadge => Page.GetByTestId("cart-quantity");
-        public ILocator CartLink => Page.GetByTestId("nav-cart");
+        public ILocator NavSignIn => TestId("nav-sign-in"); // only while signed out
+        public ILocator UserMenu => TestId("nav-menu");     // shows the user's full name
+        public ILocator CartBadge => TestId("cart-quantity");
+        public ILocator CartLink => TestId("nav-cart");
     }
 }

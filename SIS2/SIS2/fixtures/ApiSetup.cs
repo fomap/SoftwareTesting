@@ -1,13 +1,14 @@
-using System.Text.Json;
 using Microsoft.Playwright;
 using SIS2.data;
+using System.Text.Json;
 
 namespace SIS2.fixtures
 {
-    /// <summary>Test setup through the shop's REST API (fast, and keeps tests about their own flow).</summary>
+
     public static class ApiSetup
     {
-        private const string ApiUrl = "https://api.practicesoftwaretesting.com";
+        private static readonly string ApiUrl =
+            Environment.GetEnvironmentVariable("API_URL") ?? "https://api.practicesoftwaretesting.com";
 
         public static async Task<Customer> RegisterNewCustomerAsync(IPlaywright playwright)
         {
@@ -60,7 +61,7 @@ namespace SIS2.fixtures
         /// First product from the list that is in stock right now. If none is, the test is
         /// Inconclusive: that is the shared site's state, not a bug in the shop.
         /// </summary>
-        public static async Task<string> FirstInStockAsync(IPlaywright playwright, IEnumerable<string> names)
+        public static async Task<(string Name, string Id)> FirstInStockAsync(IPlaywright playwright, IEnumerable<string> names)
         {
             var api = await playwright.APIRequest.NewContextAsync();
             try
@@ -68,15 +69,17 @@ namespace SIS2.fixtures
                 foreach (var name in names)
                 {
                     var found = await GetJsonAsync(api, $"{ApiUrl}/products/search?q={Uri.EscapeDataString(name)}");
-                    var inStock = found.GetProperty("data").EnumerateArray().Any(p =>
+                    var match = found.GetProperty("data").EnumerateArray().FirstOrDefault(p =>
                         p.GetProperty("name").GetString() == name &&
                         p.GetProperty("in_stock").GetBoolean() &&
                         !p.GetProperty("is_rental").GetBoolean());
-                    if (inStock) return name;
+
+                    if (match.ValueKind != JsonValueKind.Undefined)
+                        return (name, match.GetProperty("id").GetString()!);
                 }
 
                 Assert.Inconclusive("None of the candidate products is in stock right now.");
-                return null!; // not reached
+                return default; // not reached
             }
             finally
             {

@@ -1,5 +1,5 @@
-using System.Globalization;
 using Microsoft.Playwright;
+using System.Globalization;
 
 namespace SIS2.pages
 {
@@ -9,17 +9,17 @@ namespace SIS2.pages
         public ProductPage(IPage page) : base(page) { }
 
         // Search on the home page
-        public ILocator SearchInput => Page.GetByTestId("search-query");
-        public ILocator SearchButton => Page.GetByTestId("search-submit");
-        public ILocator SearchTerm => Page.GetByTestId("search-term");
+        public ILocator SearchInput => TestId("search-query");
+        public ILocator SearchButton => TestId("search-submit");
+        public ILocator SearchTerm => TestId("search-term");
 
         // Product detail
-        public ILocator Name => Page.GetByTestId("product-name");
-        public ILocator UnitPrice => Page.GetByTestId("unit-price");
-        public ILocator Quantity => Page.GetByTestId("quantity");
-        public ILocator IncreaseQuantityButton => Page.GetByTestId("increase-quantity");
-        public ILocator AddToCartButton => Page.GetByTestId("add-to-cart");
-        public ILocator OutOfStockLabel => Page.GetByTestId("out-of-stock");
+        public ILocator Name => TestId("product-name");
+        public ILocator UnitPrice => TestId("unit-price");
+        public ILocator Quantity => TestId("quantity");
+        public ILocator IncreaseQuantityButton => TestId("increase-quantity");
+        public ILocator AddToCartButton => TestId("add-to-cart");
+        public ILocator OutOfStockLabel => TestId("out-of-stock");
         public ILocator AddedToCartAlert =>
             Page.GetByRole(AriaRole.Alert).Filter(new() { HasTextString = "Product added to shopping cart" });
 
@@ -36,8 +36,10 @@ namespace SIS2.pages
 
             // Exact name: a search for "Pliers" also lists "Slip Joint Pliers".
             var exactName = new Regex("^\\s*" + Regex.Escape(name) + "\\s*$");
-            await Page.GetByTestId("product-name").Filter(new() { HasTextRegex = exactName }).ClickAsync();
+            await TestId("product-name").Filter(new() { HasTextRegex = exactName }).ClickAsync();
         }
+
+        public Task OpenByIdAsync(string id) => OpenAsync($"/product/{id}");
 
         /// <summary>Quantity starts at 1 and the box can't be typed into, so click "+".</summary>
         public async Task SetQuantityAsync(int quantity)

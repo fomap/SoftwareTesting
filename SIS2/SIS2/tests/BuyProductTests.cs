@@ -13,11 +13,11 @@ namespace SIS2.tests
         public async Task AddToCart_CartShowsItemAndQuantity_CheckoutCompletes()
         {
             var customer = await CreateRegisteredCustomerAsync();
-            var product = await ApiSetup.FirstInStockAsync(Playwright, Products.BuyCandidates);
+            var (product, productId) = await ApiSetup.FirstInStockAsync(Playwright, Products.BuyCandidates);
             const int quantity = Products.QuantityToBuy;
 
             // Add to cart
-            await ProductPage.SearchAndOpenAsync(product);
+            await ProductPage.OpenByIdAsync(productId);
             await Expect(ProductPage.Name).ToHaveTextAsync(product);
             await Expect(ProductPage.OutOfStockLabel).ToBeHiddenAsync(); // nobody bought the last one meanwhile
 

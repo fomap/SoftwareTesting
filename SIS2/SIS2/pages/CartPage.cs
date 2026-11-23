@@ -7,8 +7,8 @@ namespace SIS2.pages
     {
         public CartPage(IPage page) : base(page) { }
 
-        public ILocator ItemNames => Page.GetByTestId("product-title");
-        public ILocator ItemQuantities => Page.GetByTestId("product-quantity");
-        public ILocator ProceedButton => Page.GetByTestId("proceed-1");
+        public ILocator ItemNames => TestId("product-title");
+        public ILocator ItemQuantities => TestId("product-quantity");
+        public ILocator ProceedButton => TestId("proceed-1");
     }
 }

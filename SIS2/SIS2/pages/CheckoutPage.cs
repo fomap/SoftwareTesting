@@ -9,24 +9,24 @@ namespace SIS2.pages
         public CheckoutPage(IPage page) : base(page) { }
 
         // Step 2: sign in
-        public ILocator Email => Page.GetByTestId("email");
-        public ILocator Password => Page.GetByTestId("password");
-        public ILocator LoginButton => Page.GetByTestId("login-submit");
-        public ILocator ProceedFromSignIn => Page.GetByTestId("proceed-2");
+        public ILocator Email => TestId("email");
+        public ILocator Password => TestId("password");
+        public ILocator LoginButton => TestId("login-submit");
+        public ILocator ProceedFromSignIn => TestId("proceed-2");
 
         // Step 3: billing address
-        public ILocator Country => Page.GetByTestId("country");
-        public ILocator PostalCode => Page.GetByTestId("postal_code");
-        public ILocator HouseNumber => Page.GetByTestId("house_number");
-        public ILocator Street => Page.GetByTestId("street");
-        public ILocator City => Page.GetByTestId("city");
-        public ILocator State => Page.GetByTestId("state");
-        public ILocator ProceedFromAddress => Page.GetByTestId("proceed-3");
+        public ILocator Country => TestId("country");
+        public ILocator PostalCode => TestId("postal_code");
+        public ILocator HouseNumber => TestId("house_number");
+        public ILocator Street => TestId("street");
+        public ILocator City => TestId("city");
+        public ILocator State => TestId("state");
+        public ILocator ProceedFromAddress => TestId("proceed-3");
 
         // Step 4: payment. The same button is first "Check payment", then "Confirm".
-        public ILocator PaymentMethod => Page.GetByTestId("payment-method");
-        public ILocator FinishButton => Page.GetByTestId("finish");
-        public ILocator PaymentSuccess => Page.GetByTestId("payment-success-message");
+        public ILocator PaymentMethod => TestId("payment-method");
+        public ILocator FinishButton => TestId("finish");
+        public ILocator PaymentSuccess => TestId("payment-success-message");
         public ILocator OrderConfirmation => Page.GetByText(new Regex("Thanks for your order!"));
 
         public async Task SignInAsync(string email, string password)
